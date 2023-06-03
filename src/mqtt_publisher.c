@@ -4,8 +4,8 @@
 #include <mqtt.h>
 #include "templates/posix_sockets.h"
 
-// #define addr "172.18.0.2"
-#define addr "192.168.192.1"
+// #define addr "172.20.0.2" //IP PARA LA RASP
+#define addr "192.168.192.1" //IP PARA LAS DEMAS MAQUINAS
 #define port "1883"
 #define topic "Mediciones"
 

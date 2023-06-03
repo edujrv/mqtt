@@ -1,6 +1,8 @@
 #include <stdio.h>
-#include "mqtt_publisher.c" // Include the file containing the prueba() function
-#include "distance_sensor.c" // Include the file containing the prueba() function
+#include "mqtt_publisher.c" 
+#include "distance_sensor.c"
+#include "temperature_sensor.c"
+
 
 
 int main() {
@@ -18,28 +20,32 @@ int main() {
     /* start publishing the time */
     printf("ready to begin publishing the time.\n");
     
-
-    setup_distance_sensor();
-    float d;
-    d = medir_distancia();
-    printf("Distancia: %f", d);
+    //TODO: UNCOMMENT THIS
+    // setup_distance_sensor();
 
     while (1) {
         
-        time_t timer;
-        time(&timer);
-        struct tm* tm_info = localtime(&timer);
-        char timebuf[26];
-        strftime(timebuf, 26, "%Y-%m-%d %H:%M:%S", tm_info);
+        //TODO: CHANGE medir_distancia_mock() FOR medir_distancia() 
+        float d, t;
+        d = medir_distancia_mock();
+        t = medir_temperatura_mock();
+        // printf("\nDistancia: %f \nTemperatura: %f", d, t);
+        
+        // time_t timer;
+        // time(&timer);
+        // struct tm* tm_info = localtime(&timer);
+        // char timebuf[26];
+        // strftime(timebuf, 26, "%Y-%m-%d %H:%M:%S", tm_info);
 
-        /* print a message */
+        // /* print a message */
         char application_message[256];
-        snprintf(application_message, sizeof(application_message), "The time is %s", timebuf);
+        // snprintf(application_message, sizeof(application_message), "The time is %s", timebuf);
 
+        snprintf(application_message, sizeof(application_message), "Distancia: %f \nTemperatura: %f", d, t);
 
         publish(&client, application_message);
 
-        printf("published : \"%s\" \n", application_message);
+        printf("\npublished : \"%s\" \n", application_message);
         check_error(&client, sockfd, &client_daemon);
         sleep(3);
         // i++;

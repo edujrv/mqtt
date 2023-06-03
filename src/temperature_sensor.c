@@ -50,3 +50,7 @@ float medir_temperatura() {
     fclose(fp);
     return temperatura;
 }
+
+float medir_temperatura_mock() {
+    return 23.4;
+}

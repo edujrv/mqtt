@@ -19,6 +19,10 @@ float medir_distancia() {
     return distancia;
 }
 
+float medir_distancia_mock() {
+    return 56.8;
+}
+
 
 void setup_distance_sensor() {
     if (wiringPiSetup() == -1) {
