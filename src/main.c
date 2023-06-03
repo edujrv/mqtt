@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include "mqtt_publisher.c" // Include the file containing the prueba() function
-
-// char msg_to_publish();
+#include "distance_sensor.c" // Include the file containing the prueba() function
 
 
 int main() {
@@ -18,7 +17,13 @@ int main() {
 
     /* start publishing the time */
     printf("ready to begin publishing the time.\n");
-  
+    
+
+    setup_distance_sensor();
+    float d;
+    d = medir_distancia();
+    printf("Distancia: %f", d);
+
     while (1) {
         
         time_t timer;
