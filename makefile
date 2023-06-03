@@ -9,5 +9,5 @@ endif
 
 MQTT_C_SOURCES = src/libs/mqtt.c src/libs/mqtt_pal.c
 
-project: src/mqtt.c $(MQTT_C_SOURCES)
+project: src/mqtt_publisher.c $(MQTT_C_SOURCES)
 	$(CC) $(CFLAGS) $^ -lpthread $(MSFLAGS) -o $@
