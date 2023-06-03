@@ -9,11 +9,11 @@ Se creara el archivo ejecutable del proyecto, y para correrlo:
 ```
 
 Cabe aclarar que el projecto publica en:
-   - HOST: 172.18.0.2
+   - HOST: 192.168.192.1
    - PORT: 1883
-   - topic: 'prueba'
+   - topic: 'Mediciones'
 
-Todos los puertos estan definidos al principio del archivo
+Todos los datos estan definidos al principio del archivo
 ```bash
     mqtt_publisher.c
 ```
