@@ -17,7 +17,7 @@ void exit_example(int status, int sockfd, pthread_t *client_daemon);
 void open_socket(int* sockfd);
 void connect_socket(int* sockfd, struct mqtt_client* client);
 void start_thread(int* sockfd,  struct mqtt_client* client, pthread_t* client_daemon);
-void publish(struct mqtt_client* client);
+void publish(struct mqtt_client* client, char application_message[256]);
 void check_error( struct mqtt_client* client, int sockfd, pthread_t* client_daemon);
 
 int prueba ();
@@ -26,42 +26,6 @@ int prueba ();
 // struct mqtt_client client;
 uint8_t sendbuf[2048]; /* sendbuf should be large enough to hold multiple whole mqtt messages */
 uint8_t recvbuf[1024]; /* recvbuf should be large enough any whole mqtt message expected to be received */
-
-int prueba () {
-    
-    int sockfd;
-    /* open the non-blocking TCP socket (connecting to the broker) */
-    open_socket(&sockfd);
-
-    struct mqtt_client client;
-    connect_socket(&sockfd, &client);
-    
-    /* start a thread to refresh the client (handle egress and ingree client traffic) */
-    pthread_t client_daemon;
-    start_thread(&sockfd, &client, &client_daemon);
-
-    /* start publishing the time */
-    printf("ready to begin publishing the time.\n");
-    printf("Press ENTER to publish the current time.\n");
-    printf("Press CTRL-D (or any other key) to exit.\n\n");
-    int i = 0;
-    // while(fgetc(stdin) == '\n') {
-    while(i < 8) {
-        printf("%d", i);
-        publish(&client);
-        check_error(&client, sockfd, &client_daemon);
-        sleep(1);
-        i++;
-    }
-
-    /* disconnect */
-    printf("\n disconnecting from %s\n", addr);
-    sleep(1);
-    /* exit */ 
-    exit_example(EXIT_SUCCESS, sockfd, &client_daemon);
-    return 0;
-
-}
 
 void open_socket(int* sockfd){
     /* open the non-blocking TCP socket (connecting to the broker) */
@@ -89,18 +53,18 @@ void start_thread(int* sockfd,  struct mqtt_client* client, pthread_t* client_da
 }
 
 // void publish(char data[], struct mqtt_client* client) {
-void publish(struct mqtt_client* client) {
+void publish(struct mqtt_client* client, char application_message[256]) {
     
-        time_t timer;
-        time(&timer);
-        struct tm* tm_info = localtime(&timer);
-        char timebuf[26];
-        strftime(timebuf, 26, "%Y-%m-%d %H:%M:%S", tm_info);
+        // time_t timer;
+        // time(&timer);
+        // struct tm* tm_info = localtime(&timer);
+        // char timebuf[26];
+        // strftime(timebuf, 26, "%Y-%m-%d %H:%M:%S", tm_info);
 
-        /* print a message */
-        char application_message[256];
-        snprintf(application_message, sizeof(application_message), "The time is %s", timebuf);
-        printf("published : \"%s\" \n", application_message);
+        // /* print a message */
+        // char application_message[256];
+        // snprintf(application_message, sizeof(application_message), "The time is %s", timebuf);
+        // printf("published : \"%s\" \n", application_message);
 
         /* publish the time */
         mqtt_publish(client, topic, application_message, strlen(application_message) + 1, MQTT_PUBLISH_QOS_0);
