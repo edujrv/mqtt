@@ -21,7 +21,13 @@ float medir_distancia() {
     long now = micros();
     long timeout = 30000;
 
-    while ((digitalRead(ECHO_PIN) == LOW) && (micros() - now < timeout));
+    // while ((digitalRead(ECHO_PIN) == LOW) && (micros() - now < timeout)){
+    while ((digitalRead(ECHO_PIN) == LOW)){
+        if ((micros() - now < timeout)){
+            printf("TIMEOUT");
+            break;
+        }
+    }
     long startTime = micros();
 
     printf("------- 4 -------.\n");
