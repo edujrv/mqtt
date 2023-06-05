@@ -7,7 +7,10 @@
 float medir_distancia() {
     printf("------- 1 -------.\n");
 
+    digitalWrite(TRIG_PIN, LOW);
+    delayMicroseconds(2);
     digitalWrite(TRIG_PIN, HIGH);
+
     delayMicroseconds(10);
     printf("------- 2 -------.\n");
 
@@ -15,7 +18,10 @@ float medir_distancia() {
 
     printf("------- 3 -------.\n");
 
-    while (digitalRead(ECHO_PIN) == LOW);
+    long now = micros();
+    long timeout = 30000;
+
+    while ((digitalRead(ECHO_PIN) == LOW) && (micros() - now < timeout));
     long startTime = micros();
 
     printf("------- 4 -------.\n");
