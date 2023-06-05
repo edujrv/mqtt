@@ -1,8 +1,8 @@
 #include <stdio.h>
 #include <wiringPi.h>
 
-#define TRIG_PIN 0  // Cambia estos valores según los pines GPIO que estés utilizando
-#define ECHO_PIN 1
+#define TRIG_PIN 18  // Pin 12 (GPIO18)
+#define ECHO_PIN 24  //Pin 18 (GPIO24)
 
 float medir_distancia() {
     digitalWrite(TRIG_PIN, HIGH);
