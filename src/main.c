@@ -25,6 +25,11 @@ int main() {
     //TODO: UNCOMMENT THIS
 
     // setup_distance_sensor();
+    if (wiringPiSetup() == -1) {
+        printf("Error al inicializar WiringPi.\n");
+        return;
+    }
+
     pinMode(18, OUTPUT);
     pinMode(24, INPUT);
 
