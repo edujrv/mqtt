@@ -16,6 +16,7 @@ float medir_distancia() {
     long travelTime = micros() - startTime;
 
     float distancia = travelTime / 58.0;  // Velocidad del sonido en cm/µs
+        printf("\n DISTANCIA : \"%f\" \n", distancia);
     return distancia;
 }
 
@@ -25,6 +26,7 @@ float medir_distancia_mock() {
 
 
 void setup_distance_sensor() {
+        printf("INCIALIZANDO DISTANCE SENSOR.\n");
     if (wiringPiSetup() == -1) {
         printf("Error al inicializar WiringPi.\n");
         return;
@@ -32,4 +34,6 @@ void setup_distance_sensor() {
 
     pinMode(TRIG_PIN, OUTPUT);
     pinMode(ECHO_PIN, INPUT);
+        printf("DISTANCE SENSOR INICIALIZADO.\n");
+
 }

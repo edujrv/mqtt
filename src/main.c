@@ -21,14 +21,21 @@ int main() {
     printf("ready to begin publishing the time.\n");
     
     //TODO: UNCOMMENT THIS
+
     setup_distance_sensor();
+
+    printf("ANTES DEL WHILE.\n");
+
 
     while (1) {
         
         //TODO: CHANGE medir_distancia_mock() FOR medir_distancia() 
         float d, t;
+
         d = medir_distancia();
         // t = medir_temperatura();
+        printf("DESPUES DE MEDIR.\n");
+
 
 
         // printf("\nDistancia: %f \nTemperatura: %f", d, t);
