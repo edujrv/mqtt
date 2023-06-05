@@ -28,7 +28,9 @@ int main() {
         //TODO: CHANGE medir_distancia_mock() FOR medir_distancia() 
         float d, t;
         d = medir_distancia();
-        t = medir_temperatura();
+        // t = medir_temperatura();
+
+
         // printf("\nDistancia: %f \nTemperatura: %f", d, t);
         
         // time_t timer;
@@ -41,7 +43,9 @@ int main() {
         char application_message[256];
         // snprintf(application_message, sizeof(application_message), "The time is %s", timebuf);
 
-        snprintf(application_message, sizeof(application_message), "Distancia: %f \nTemperatura: %f", d, t);
+        // snprintf(application_message, sizeof(application_message), "Distancia: %f \nTemperatura: %f", d, t);
+        snprintf(application_message, sizeof(application_message), "Distancia: %f", d);
+
 
         publish(&client, application_message);
 
