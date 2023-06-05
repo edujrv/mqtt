@@ -4,7 +4,7 @@
 #include "temperature_sensor.c"
 
 
-// void setup_distance_sensor_main();
+void setup_distance_sensor_main();
 
 
 int main() {
@@ -24,17 +24,7 @@ int main() {
     
     //TODO: UNCOMMENT THIS
 
-    // setup_distance_sensor();
-    if (wiringPiSetup() == -1) {
-        printf("Error al inicializar WiringPi.\n");
-        return;
-    }
-
-    pinMode(18, OUTPUT);
-    pinMode(24, INPUT);
-
-    printf("ANTES DEL WHILE.\n");
-
+    setup_distance_sensor();
 
     while (1) {
         
@@ -78,16 +68,3 @@ int main() {
     exit_example(EXIT_SUCCESS, sockfd, &client_daemon);
     return 0;
 }
-
-// void setup_distance_sensor_main() {
-//         printf("INCIALIZANDO DISTANCE SENSOR.\n");
-//     if (wiringPiSetup() == -1) {
-//         printf("Error al inicializar WiringPi.\n");
-//         return;
-//     }
-
-//     pinMode(18, OUTPUT);
-//     pinMode(24, INPUT);
-//         printf("DISTANCE SENSOR INICIALIZADO.\n");
-
-// }
