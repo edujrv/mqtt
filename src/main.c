@@ -60,7 +60,7 @@ int main() {
         sleep(3);
         // i++;
     }
-    gpioTerminate();
+
     /* disconnect */
     printf("\n disconnecting from %s\n", addr);
     sleep(1);
