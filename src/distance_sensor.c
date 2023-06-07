@@ -21,7 +21,7 @@ float medir_distancia() {
     long startTime = micros();
     long now = micros();
     long timeout = 30000;
-    delayMicroseconds(2);
+    delayMicroseconds(5);
 
     while ((digitalRead(ECHO_PIN) == LOW) && (micros() - now < timeout)){
     // while ((digitalRead(ECHO_PIN) == LOW)){
@@ -36,8 +36,10 @@ float medir_distancia() {
     long travelTime = micros() - startTime;
 
     // printf("------- 5 -------.\n");
-    float distancia = travelTime / 58.0;  // Velocidad del sonido en cm/µs
-        printf("\n DISTANCIA : \"%f\" \n", distancia);
+    // float distancia = travelTime / 58.0;  // Velocidad del sonido en cm/µs 
+    float distancia = travelTime * 34300 / 2;
+
+        // printf("\n DISTANCIA : \"%f\" \n", distancia);
     return distancia;
 }
 
