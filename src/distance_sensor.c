@@ -59,18 +59,21 @@
 // }
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <wiringPi.h>
 
-#define TRIG_PIN 23  // GPIO pin 4
-#define ECHO_PIN 24  // GPIO pin 5
+#define TRIG_PIN 23
+#define ECHO_PIN 24
 
-void setup_distance_sensor() {
+void setup_distance_sensor()
+{
     wiringPiSetup();
     pinMode(TRIG_PIN, OUTPUT);
     pinMode(ECHO_PIN, INPUT);
 }
 
-float medir_distancia() {
+float medir_distancia()
+{
     digitalWrite(TRIG_PIN, LOW);
     delayMicroseconds(2);
 
@@ -78,42 +81,29 @@ float medir_distancia() {
     delayMicroseconds(10);
     digitalWrite(TRIG_PIN, LOW);
 
-    // unsigned int timeout = 5000;  // Timeout in microseconds
-    unsigned int pulseStartTime, pulseEndTime;
-    float distance;
+    while (digitalRead(ECHO_PIN) == LOW)
+        ;
+    long startTime = micros();
 
-    while (digitalRead(ECHO_PIN) == LOW) {
-        // if (--timeout == 0)
-        //     return -1.0;  // Return -1 if measurement timed out
-    }
+    while (digitalRead(ECHO_PIN) == HIGH)
+        ;
+    long endTime = micros();
 
-    pulseStartTime = micros();
-
-    while (digitalRead(ECHO_PIN) == HIGH) {
-        // if (--timeout == 0)
-        //     return -1.0;  // Return -1 if measurement timed out
-    }
-
-    pulseEndTime = micros();
-
-    unsigned int pulseDuration = pulseEndTime - pulseStartTime;
-    distance = pulseDuration / 58.0;  // Divide by 58 to get distance in centimeters
+    long travelTime = endTime - startTime;
+    float distance = travelTime / 58.0;
 
     return distance;
 }
 
-// int main() {
+// int main()
+// {
 //     setup();
 
-//     while (1) {
-//         float distance = measureDistance();
-
-//         if (distance != -1.0)
-//             printf("Distance: %.2f cm\n", distance);
-//         else
-//             printf("Measurement timed out.\n");
-
-//         delay(1000);  // Delay 1 second before the next measurement
+//     while (1)
+//     {
+//         float distance = getDistance();
+//         printf("Distancia: %.2f cm\n", distance);
+//         delay(500); // Espera 500 milisegundos entre lecturas
 //     }
 
 //     return 0;
