@@ -61,8 +61,8 @@
 #include <stdio.h>
 #include <wiringPi.h>
 
-#define TRIG_PIN 4  // GPIO pin 4
-#define ECHO_PIN 5  // GPIO pin 5
+#define TRIG_PIN 23  // GPIO pin 4
+#define ECHO_PIN 24  // GPIO pin 5
 
 void setup_distance_sensor() {
     wiringPiSetup();
@@ -78,20 +78,20 @@ float medir_distancia() {
     delayMicroseconds(10);
     digitalWrite(TRIG_PIN, LOW);
 
-    unsigned int timeout = 5000;  // Timeout in microseconds
+    // unsigned int timeout = 5000;  // Timeout in microseconds
     unsigned int pulseStartTime, pulseEndTime;
     float distance;
 
     while (digitalRead(ECHO_PIN) == LOW) {
-        if (--timeout == 0)
-            return -1.0;  // Return -1 if measurement timed out
+        // if (--timeout == 0)
+        //     return -1.0;  // Return -1 if measurement timed out
     }
 
     pulseStartTime = micros();
 
     while (digitalRead(ECHO_PIN) == HIGH) {
-        if (--timeout == 0)
-            return -1.0;  // Return -1 if measurement timed out
+        // if (--timeout == 0)
+        //     return -1.0;  // Return -1 if measurement timed out
     }
 
     pulseEndTime = micros();
