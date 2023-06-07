@@ -57,54 +57,60 @@
 //         printf("DISTANCE SENSOR INICIALIZADO.\n");
 
 // }
-
 #include <stdio.h>
-#include <stdlib.h>
-#include <wiringPi.h>
+#include <pigpio.h>
 
 #define TRIG_PIN 23
 #define ECHO_PIN 24
 
-void setup_distance_sensor()
-{
-    wiringPiSetup();
-    pinMode(TRIG_PIN, OUTPUT);
-    pinMode(ECHO_PIN, INPUT);
+
+void setup_distance_sensor() {
+        printf("INCIALIZANDO DISTANCE SENSOR.\n");
+    if (gpioInitialise() < 0)
+    {
+        printf("Error al inicializar GPIO\n");
+        return 1;
+    }
+
+    gpioSetMode(TRIG_PIN, PI_OUTPUT);
+    gpioSetMode(ECHO_PIN, PI_INPUT);
+        printf("DISTANCE SENSOR INICIALIZADO.\n");
+
 }
 
 float medir_distancia()
 {
-    digitalWrite(TRIG_PIN, LOW);
-    delayMicroseconds(2);
+    
 
-    digitalWrite(TRIG_PIN, HIGH);
-    delayMicroseconds(10);
-    digitalWrite(TRIG_PIN, LOW);
+    // while (1)
+    // {
+        gpioWrite(TRIG_PIN, 0); // Establecer el pin TRIG_PIN a bajo
+        gpioDelay(500);
 
-    while (digitalRead(ECHO_PIN) == LOW)
-        ;
-    long startTime = micros();
+        gpioWrite(TRIG_PIN, 1); // Generar pulso de trigger
+        gpioDelay(10);
+        gpioWrite(TRIG_PIN, 0);
 
-    while (digitalRead(ECHO_PIN) == HIGH)
-        ;
-    long endTime = micros();
+        while (gpioRead(ECHO_PIN) == 0)
+            ;
 
-    long travelTime = endTime - startTime;
-    float distance = travelTime / 58.0;
+        long startTime = gpioTick();
 
-    return distance;
+        while (gpioRead(ECHO_PIN) == 1)
+            ;
+
+        long endTime = gpioTick();
+        long travelTime = endTime - startTime;
+
+        float distance = (travelTime / 1000000.0) * 34000 / 2;
+
+        printf("Distancia: %.2f cm\n", distance);
+
+        // gpioDelay(500);
+    // }
+
+    // gpioTerminate();
+
+    return 0;
 }
 
-// int main()
-// {
-//     setup();
-
-//     while (1)
-//     {
-//         float distance = getDistance();
-//         printf("Distancia: %.2f cm\n", distance);
-//         delay(500); // Espera 500 milisegundos entre lecturas
-//     }
-
-//     return 0;
-// }
