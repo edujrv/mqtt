@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <wiringPi.h>
 
-#define TRIG_PIN 18  // Pin 12 (GPIO18)
+#define TRIG_PIN 23  // Pin 16 (GPIO23)
 #define ECHO_PIN 24  //Pin 18 (GPIO24)
 
 float medir_distancia() {
@@ -21,12 +21,12 @@ float medir_distancia() {
     long now = micros();
     long timeout = 30000;
 
-    // while ((digitalRead(ECHO_PIN) == LOW) && (micros() - now < timeout)){
-    while ((digitalRead(ECHO_PIN) == LOW)){
-        if ((micros() - now < timeout)){
-            printf("TIMEOUT");
-            break;
-        }
+    while ((digitalRead(ECHO_PIN) == LOW) && (micros() - now < timeout)){
+    // while ((digitalRead(ECHO_PIN) == LOW)){
+    //     if ((micros() - now < timeout)){
+    //         printf("TIMEOUT");
+    //         break;
+    //     }
     }
     long startTime = micros();
 
