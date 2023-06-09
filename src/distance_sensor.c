@@ -20,16 +20,17 @@ float medir_distancia() {
 
     long startTime = micros();
     long now = micros();
-    long timeout = 30000;
+//     long timeout = 30000;
     delayMicroseconds(5);
 
-    while ((digitalRead(ECHO_PIN) == LOW) && (micros() - now < timeout)){
+//     while ((digitalRead(ECHO_PIN) == LOW) && (micros() - now < timeout)){
     // while ((digitalRead(ECHO_PIN) == LOW)){
     //     if ((micros() - now < timeout)){
     //         printf("TIMEOUT");
     //         break;
     //     }
-    }
+//     }
+    while (digitalRead(ECHO_PIN) == LOW);
 
     // printf("------- 4 -------.\n");
     while (digitalRead(ECHO_PIN) == HIGH);
@@ -50,10 +51,11 @@ float medir_distancia_mock() {
 
 void setup_distance_sensor() {
         printf("INCIALIZANDO DISTANCE SENSOR.\n");
-    if (wiringPiSetup() == -1) {
-        printf("Error al inicializar WiringPi.\n");
-        return;
-    }
+//     if (wiringPiSetup() == -1) {
+//         printf("Error al inicializar WiringPi.\n");
+//         return;
+//     }
+    wiringPiSetupGpio();
 
     pinMode(TRIG_PIN, OUTPUT);
     pinMode(ECHO_PIN, INPUT);
