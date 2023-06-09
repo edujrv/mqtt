@@ -1,3 +1,26 @@
+## Requerimientos
+### WiringPi
+Update your system's package list:
+```bash
+    $ sudo apt-get update
+``` 
+Install the necessary build tools:
+```bash
+    $ sudo apt-get install build-essential
+``` 
+Clone the WiringPi repository:
+```bash
+    $ git clone https://github.com/WiringPi/WiringPi
+``` 
+Navigate to the WiringPi directory:
+```bash
+    $ cd WiringPi
+``` 
+Build and install WiringPi:
+```bash
+    $ ./build
+``` 
+
 ## Building the project
 Para compilar:
 ```bash
