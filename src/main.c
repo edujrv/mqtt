@@ -25,15 +25,15 @@ int main() {
     //TODO: UNCOMMENT THIS
 
     setup_distance_sensor();
+    setup_temperature_sensor();
 
     while (1) {
         
         //TODO: CHANGE medir_distancia_mock() FOR medir_distancia() 
         float d, t;
 
-        d = medir_distancia();
-        // t = medir_temperatura();
-        printf("DESPUES DE MEDIR.\n");
+        d = obtener_distancia();
+        t = obtener_temperatura();
 
 
 
@@ -50,7 +50,7 @@ int main() {
         // snprintf(application_message, sizeof(application_message), "The time is %s", timebuf);
 
         // snprintf(application_message, sizeof(application_message), "Distancia: %f \nTemperatura: %f", d, t);
-        snprintf(application_message, sizeof(application_message), "Distancia: %f", d);
+        snprintf(application_message, sizeof(application_message), "Distancia: %f\nTemperatura: %f", d, t);
 
 
         publish(&client, application_message);
