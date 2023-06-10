@@ -6,30 +6,27 @@
 #include "distance_sensor.c"
 #include "temperature_sensor.c"
 
-// Para que sirve ??
-void setup_distance_sensor_main();
-
 // Variables globales compartidas
 float distance = 0.0;
 float temperature = 0.0;
-pthread_mutex_t data_mutex;
+pthread_mutex_t distance_mutex;
+pthread_mutex_t temperature_mutex;
 pthread_cond_t data_ready_cond;
 int acquisition_completed = 0;
 
 // Estructura para pasar múltiples argumentos al hilo publish_thread
-struct publish_thread_args
-{
-    struct mqtt_client *client;
+struct publish_thread_args {
+    struct mqtt_client* client;
     int sockfd;
-    pthread_t *client_daemon;
+    pthread_t* client_daemon;
 };
 
-// Hilos
-void *publish_thread(void *arg);
-void *acquisition_thread(void *arg);
+// Prototipos de funciones
+void* publish_thread(void* arg);
+void* distance_thread(void* arg);
+void* temperature_thread(void* arg);
 
-int main()
-{
+int main() {
     int sockfd;
     open_socket(&sockfd);
 
@@ -39,65 +36,64 @@ int main()
     pthread_t client_daemon;
     start_thread(&sockfd, &client, &client_daemon);
 
-    // start publishing the time
-    printf("ready to begin publishing the time.\n");
-
-    // Inicializar los sensores
-    setup_distance_sensor();
-    setup_temperature_sensor();
-
-    // Inicializar el mutex y la variable de condición
-    pthread_mutex_init(&data_mutex, NULL);
+    // Inicializar los mutex y la variable de condición
+    pthread_mutex_init(&distance_mutex, NULL);
+    pthread_mutex_init(&temperature_mutex, NULL);
     pthread_cond_init(&data_ready_cond, NULL);
 
     // Crear hilos
-    pthread_t publish_tid, acquisition_tid;
-
+    pthread_t publish_tid, distance_tid, temperature_tid;
+    
     // Estructura para los argumentos del hilo publish_thread
     struct publish_thread_args publish_args;
     publish_args.client = &client;
     publish_args.sockfd = sockfd;
     publish_args.client_daemon = &client_daemon;
-
-    pthread_create(&publish_tid, NULL, publish_thread, (void *)&publish_args);
-    pthread_create(&acquisition_tid, NULL, acquisition_thread, NULL);
+    
+    pthread_create(&publish_tid, NULL, publish_thread, (void*)&publish_args);
+    pthread_create(&distance_tid, NULL, distance_thread, NULL);
+    pthread_create(&temperature_tid, NULL, temperature_thread, NULL);
 
     // Esperar a que los hilos terminen
     pthread_join(publish_tid, NULL);
-    pthread_join(acquisition_tid, NULL);
+    pthread_join(distance_tid, NULL);
+    pthread_join(temperature_tid, NULL);
 
     // Liberar recursos
-    pthread_mutex_destroy(&data_mutex);
+    pthread_mutex_destroy(&distance_mutex);
+    pthread_mutex_destroy(&temperature_mutex);
     pthread_cond_destroy(&data_ready_cond);
     exit_example(EXIT_SUCCESS, sockfd, &client_daemon);
     return 0;
 }
 
-void *publish_thread(void *arg)
-{
-    struct publish_thread_args *args = (struct publish_thread_args *)arg;
-    struct mqtt_client *client = args->client;
+void* publish_thread(void* arg) {
+    struct publish_thread_args* args = (struct publish_thread_args*)arg;
+    struct mqtt_client* client = args->client;
     int sockfd = args->sockfd;
-    pthread_t *client_daemon = args->client_daemon;
+    pthread_t* client_daemon = args->client_daemon;
 
-    while (1)
-    {
+    while (1) {
         char application_message[256];
         float d, t;
 
         // Esperar a que los otros hilos completen sus tareas
-        pthread_mutex_lock(&data_mutex);
-        while (!acquisition_completed)
-        {
-            pthread_cond_wait(&data_ready_cond, &data_mutex);
+        pthread_mutex_lock(&distance_mutex);
+        pthread_mutex_lock(&temperature_mutex);
+        while (!acquisition_completed) {
+            pthread_cond_wait(&data_ready_cond, &distance_mutex);
         }
         acquisition_completed = 0;
-        pthread_mutex_unlock(&data_mutex);
+        pthread_mutex_unlock(&distance_mutex);
+        pthread_mutex_unlock(&temperature_mutex);
 
-        pthread_mutex_lock(&data_mutex);
+        pthread_mutex_lock(&distance_mutex);
         d = distance;
+        pthread_mutex_unlock(&distance_mutex);
+
+        pthread_mutex_lock(&temperature_mutex);
         t = temperature;
-        pthread_mutex_unlock(&data_mutex);
+        pthread_mutex_unlock(&temperature_mutex);
 
         snprintf(application_message, sizeof(application_message), "{ \"distancia\": %f, \"temperatura\": %f }", d, t);
 
@@ -113,22 +109,42 @@ void *publish_thread(void *arg)
     return NULL;
 }
 
-void *acquisition_thread(void *arg)
-{
-    while (1)
-    {
-        float d, t;
+void* distance_thread(void* arg) {
+    while (1) {
+        float d;
 
-        // Simulación de obtención de datos de los sensores
+        // Simulación de obtención de la distancia
         d = obtener_distancia();
-        t = obtener_temperatura();
 
-        pthread_mutex_lock(&data_mutex);
+        pthread_mutex_lock(&distance_mutex);
         distance = d;
-        temperature = t;
+        pthread_mutex_unlock(&distance_mutex);
+
+        pthread_mutex_lock(&temperature_mutex);
         acquisition_completed = 1;
         pthread_cond_broadcast(&data_ready_cond);
-        pthread_mutex_unlock(&data_mutex);
+        pthread_mutex_unlock(&temperature_mutex);
+
+        sleep(1);
+    }
+    return NULL;
+}
+
+void* temperature_thread(void* arg) {
+    while (1) {
+        float t;
+
+        // Simulación de obtención de la temperatura
+        t = obtener_temperatura();
+
+        pthread_mutex_lock(&temperature_mutex);
+        temperature = t;
+        pthread_mutex_unlock(&temperature_mutex);
+
+        pthread_mutex_lock(&distance_mutex);
+        acquisition_completed = 1;
+        pthread_cond_broadcast(&data_ready_cond);
+        pthread_mutex_unlock(&distance_mutex);
 
         sleep(1);
     }
