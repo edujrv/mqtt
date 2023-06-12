@@ -197,7 +197,7 @@ void* publish_thread(void* arg) {
 
         pthread_mutex_lock(&distance_mutex);
         printf("distance mutex1 \n");
-        // distance = obtener_distancia();
+        distance = obtener_distancia();
         pthread_mutex_unlock(&distance_mutex);
         printf("distance mutex1 afuera \n");
 
