@@ -50,7 +50,7 @@ int main() {
     }
     printf("DESPUES DE INICIALIZAR MUTEX\n");
     // Crear hilos
-    pthread_t publish_tid, distance_tid, temperature_tid;
+    pthread_t publish_tid, distance_tid, temperature_tid, measurement_tid;
     
     // Estructura para los argumentos del hilo publish_thread
     struct publish_thread_args publish_args;
@@ -61,6 +61,9 @@ int main() {
     pthread_create(&publish_tid, NULL, publish_thread, (void*)&publish_args);
     // pthread_create(&distance_tid, NULL, distance_thread, NULL);
     // pthread_create(&temperature_tid, NULL, temperature_thread, NULL);
+    pthread_create(&measurement_tid, NULL, measurement_thread, NULL);
+
+    
     printf("DESPUES DE INICIALIZAR hilos\n");
 
     // Esperar a que los hilos terminen
