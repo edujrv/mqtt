@@ -150,7 +150,7 @@ void* temperature_thread(void* arg) {
         printf("temperature thread \n");
         // Simulación de obtención de la temperatura
         t = obtener_temperatura();
-
+        printf("temperature mutex0 \n");
         pthread_mutex_lock(&temperature_mutex);
         temperature = t;
         printf("temperature mutex1 \n");
