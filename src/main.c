@@ -37,9 +37,14 @@ int main() {
     start_thread(&sockfd, &client, &client_daemon);
 
     // Inicializar los mutex y la variable de condición
-    pthread_mutex_init(&distance_mutex, NULL);
-    pthread_mutex_init(&temperature_mutex, NULL);
-    pthread_cond_init(&data_ready_cond, NULL);
+    int dis_mux = pthread_mutex_init(&distance_mutex, NULL);
+    int temp_mux = pthread_mutex_init(&temperature_mutex, NULL);
+    int data_mux = pthread_cond_init(&data_ready_cond, NULL);
+
+    if (dis_mux != 0 || temp_mux != 0 || data_mux != 0 ){
+        printf("ERROR AL INICIALIZAR MUTEX\n");
+
+    }
     printf("DESPUES DE INICIALIZAR MUTEX\n");
     // Crear hilos
     pthread_t publish_tid, distance_tid, temperature_tid;
