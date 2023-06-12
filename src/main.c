@@ -24,8 +24,8 @@ struct publish_thread_args {
 
 // Prototipos de funciones
 void* publish_thread(void* arg);
-void* distance_thread(void* arg);
-void* temperature_thread(void* arg);
+// void* distance_thread(void* arg);
+// void* temperature_thread(void* arg);
 
 int main() {
     int sockfd;
@@ -59,8 +59,8 @@ int main() {
     publish_args.client_daemon = &client_daemon;
     
     pthread_create(&publish_tid, NULL, publish_thread, (void*)&publish_args);
-    pthread_create(&distance_tid, NULL, distance_thread, NULL);
-    pthread_create(&temperature_tid, NULL, temperature_thread, NULL);
+    // pthread_create(&distance_tid, NULL, distance_thread, NULL);
+    // pthread_create(&temperature_tid, NULL, temperature_thread, NULL);
     printf("DESPUES DE INICIALIZAR hilos\n");
 
     // Esperar a que los hilos terminen
