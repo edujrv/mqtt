@@ -15,9 +15,9 @@ void setup_distance_sensor() {
 float obtener_distancia() { 
     // Envia un pulso de disparo al sensor
     digitalWrite(TRIG_PIN, HIGH);
-    // usleep(10);
-    int i = 0;
-    while(i <10000){i++;}
+    usleep(10);
+    // int i = 0;
+    // while(i <10000){i++;}
     digitalWrite(TRIG_PIN, LOW);
 
     // Espera a que el pin ECHO se active

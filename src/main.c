@@ -39,6 +39,9 @@ int main() {
     pthread_t client_daemon;
     start_thread(&sockfd, &client, &client_daemon);
 
+    setup_distance_sensor();
+    setup_temperature_sensor();
+
     // Inicializar los mutex y la variable de condición
     int dis_mux = pthread_mutex_init(&distance_mutex, NULL);
     int temp_mux = pthread_mutex_init(&temperature_mutex, NULL);
