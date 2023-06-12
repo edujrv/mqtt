@@ -20,7 +20,7 @@ int main() {
     start_thread(&sockfd, &client, &client_daemon);
 
     /* start publishing the time */
-    printf("ready to begin publishing the time.\n");
+    printf("ready to begin publishing the measurement.\n");
     
     //TODO: UNCOMMENT THIS
 
@@ -46,7 +46,7 @@ int main() {
 
     /* disconnect */
     printf("\n disconnecting from %s\n", addr);
-    sleep(1);
+    sleep(5);
     /* exit */ 
     exit_example(EXIT_SUCCESS, sockfd, &client_daemon);
     return 0;
