@@ -137,7 +137,7 @@ void* distance_thread(void* arg) {
 void* temperature_thread(void* arg) {
     while (1) {
         float t;
-
+        printf("temperature thread \n");
         // Simulación de obtención de la temperatura
         t = obtener_temperatura();
 
