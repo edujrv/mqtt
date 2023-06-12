@@ -24,6 +24,8 @@ struct publish_thread_args {
 
 // Prototipos de funciones
 void* publish_thread(void* arg);
+void* measurement_thread(void* arg);
+
 // void* distance_thread(void* arg);
 // void* temperature_thread(void* arg);
 
