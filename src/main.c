@@ -13,7 +13,7 @@ pthread_mutex_t distance_mutex;
 pthread_mutex_t temperature_mutex;
 pthread_mutex_t acquisition_completed;
 pthread_cond_t data_ready_cond;
-int acquisition_completed = 0;
+// int acquisition_completed = 0;
 
 // Estructura para pasar múltiples argumentos al hilo publish_thread
 struct publish_thread_args {
