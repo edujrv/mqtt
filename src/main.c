@@ -92,7 +92,7 @@ void* publish_thread(void* arg) {
         pthread_mutex_lock(&temperature_mutex);
         while (!acquisition_completed) {
             printf("while \n");
-            pthread_cond_wait(&data_ready_cond, &distance_mutex);
+            // pthread_cond_wait(&data_ready_cond, &distance_mutex);
             printf("waiting cond \n");
         }
         acquisition_completed = 0;
