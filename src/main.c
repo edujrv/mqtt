@@ -40,7 +40,7 @@ int main() {
     pthread_mutex_init(&distance_mutex, NULL);
     pthread_mutex_init(&temperature_mutex, NULL);
     pthread_cond_init(&data_ready_cond, NULL);
-
+    printf("DESPUES DE INICIALIZAR MUTEX\n");
     // Crear hilos
     pthread_t publish_tid, distance_tid, temperature_tid;
     
@@ -53,16 +53,20 @@ int main() {
     pthread_create(&publish_tid, NULL, publish_thread, (void*)&publish_args);
     pthread_create(&distance_tid, NULL, distance_thread, NULL);
     pthread_create(&temperature_tid, NULL, temperature_thread, NULL);
+    printf("DESPUES DE INICIALIZAR hilos\n");
 
     // Esperar a que los hilos terminen
     pthread_join(publish_tid, NULL);
     pthread_join(distance_tid, NULL);
     pthread_join(temperature_tid, NULL);
+    printf("DESPUES DE FINALIZAR HILOS\n");
 
     // Liberar recursos
     pthread_mutex_destroy(&distance_mutex);
     pthread_mutex_destroy(&temperature_mutex);
     pthread_cond_destroy(&data_ready_cond);
+    printf("DESPUES DE FINALIZAR MUTEX\n");
+
     exit_example(EXIT_SUCCESS, sockfd, &client_daemon);
     return 0;
 }
