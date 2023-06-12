@@ -183,6 +183,7 @@ void* publish_thread(void* arg) {
 //     }
     void* measurement_thread(void* arg) {
     while (1) {
+        pthread_mutex_lock(&acquisition_completed);
         float t;
         printf("temperature thread \n");
         // Simulación de obtención de la temperatura
@@ -198,6 +199,7 @@ void* publish_thread(void* arg) {
         printf("distance mutex1 \n");
         distance = obtener_distancia();
         pthread_mutex_unlock(&distance_mutex);
+        printf("distance mutex1 afuera \n");
 
 
         // pthread_mutex_lock(&distance_mutex);
