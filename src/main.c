@@ -132,11 +132,11 @@ void* distance_thread(void* arg) {
         float d;
 
         // Simulación de obtención de la distancia
-        d = obtener_distancia();
+        // d = obtener_distancia();
 
         pthread_mutex_lock(&distance_mutex);
         printf("distance mutex1 \n");
-        distance = d;
+        distance = obtener_distancia();
         pthread_mutex_unlock(&distance_mutex);
 
         pthread_mutex_lock(&temperature_mutex);
@@ -155,10 +155,10 @@ void* temperature_thread(void* arg) {
         float t;
         printf("temperature thread \n");
         // Simulación de obtención de la temperatura
-        t = obtener_temperatura();
+        // t = obtener_temperatura();
         printf("temperature mutex0 \n");
         pthread_mutex_lock(&temperature_mutex);
-        temperature = t;
+        temperature = obtener_temperatura();
         printf("temperature mutex1 \n");
         pthread_mutex_unlock(&temperature_mutex);
 
