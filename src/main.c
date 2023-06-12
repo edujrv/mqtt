@@ -11,6 +11,7 @@ float distance = 0.0;
 float temperature = 0.0;
 pthread_mutex_t distance_mutex;
 pthread_mutex_t temperature_mutex;
+pthread_mutex_t acquisition_completed;
 pthread_cond_t data_ready_cond;
 int acquisition_completed = 0;
 
