@@ -5,8 +5,6 @@
 #include "mqtt_publisher.c"
 #include "distance_sensor.c"
 #include "temperature_sensor.c"
-#include <signal.h>
-#include <sys/time.h>
 
 // Variables globales compartidas
 float distance = 0.0;
@@ -14,7 +12,7 @@ float temperature = 0.0;
 pthread_mutex_t distance_mutex;
 pthread_mutex_t temperature_mutex;
 pthread_mutex_t acquisition_completed;
-pthread_cond_t measurement_cond;
+
 // Estructura para pasar múltiples argumentos al hilo publish_thread
 struct publish_thread_args {
     struct mqtt_client* client;
@@ -25,8 +23,6 @@ struct publish_thread_args {
 // Prototipos de funciones
 void* publish_thread(void* arg);
 void* measurement_thread(void* arg);
-void measurement();
-
 
 int main() {
     int sockfd;
@@ -45,7 +41,7 @@ int main() {
     pthread_mutex_init(&distance_mutex, NULL);
     pthread_mutex_init(&temperature_mutex, NULL);
     pthread_mutex_init(&acquisition_completed, NULL);
-    pthread_cond_init(&measurement_cond, NULL);
+
     // Crear hilos
     pthread_t publish_tid, measurement_tid;
     
@@ -65,7 +61,6 @@ int main() {
     // Liberar recursos
     pthread_mutex_destroy(&distance_mutex);
     pthread_mutex_destroy(&temperature_mutex);
-    pthread_cond_destroy(&measurement_cond);
 
     //Salgo del mqtt
     exit_socket(EXIT_SUCCESS, sockfd, &client_daemon);
@@ -105,26 +100,7 @@ void* publish_thread(void* arg) {
     return NULL;
 }
     void* measurement_thread(void* arg) {
-    struct itimerval timer;
-
-	// Set up timer to blink LED
-	timer.it_value.tv_sec = 0;
-	timer.it_value.tv_usec = 1000000;  // Blink every 500ms
-	timer.it_interval.tv_sec = 0;
-	timer.it_interval.tv_usec = 1000000;
-	setitimer(ITIMER_REAL, &timer, NULL);
-	signal(SIGALRM, measurement);
-
-	while(1)  // Loop forever
-	{
-    // printf("measurement_thread");
-    	    pause();  // Wait for signal
-	}
-    // return NULL;
-    }
-
-    void measurement() {
-        printf("measurement");
+    while (1) {
         pthread_mutex_lock(&acquisition_completed);
         pthread_mutex_lock(&temperature_mutex);
         temperature = obtener_temperatura();
@@ -136,5 +112,7 @@ void* publish_thread(void* arg) {
 
         pthread_mutex_unlock(&acquisition_completed);
 
-    // return NULL;
+        sleep(1);
+    }
+    return NULL;
 }
