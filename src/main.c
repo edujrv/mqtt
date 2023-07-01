@@ -109,6 +109,7 @@ void *publish_thread(void *arg)
 // Signal handler for the timer expiration
 void timer_handler(int sig)
 {
+    printf("In time handler\n");
     if (sig == SIGALRM)
     {
         pthread_mutex_lock(&acquisition_completed);
