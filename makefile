@@ -9,7 +9,7 @@ endif
 
 MQTT_C_SOURCES = src/libs/mqtt.c src/libs/mqtt_pal.c
 
-LIBS = -lpthread -lwiringPi
+LIBS = -lpthread -lwiringPi -lrt
 # LIBS = -lpthread -lwiringPi -lpigpio -lrt
 
 

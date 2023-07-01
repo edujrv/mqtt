@@ -5,6 +5,8 @@
 #include "mqtt_publisher.c"
 #include "distance_sensor.c"
 #include "temperature_sensor.c"
+#include <sys/time.h>
+#include <signal.h>
 
 // Variables globales compartidas
 float distance = 0.0;
@@ -14,17 +16,19 @@ pthread_mutex_t temperature_mutex;
 pthread_mutex_t acquisition_completed;
 
 // Estructura para pasar múltiples argumentos al hilo publish_thread
-struct publish_thread_args {
-    struct mqtt_client* client;
+struct publish_thread_args
+{
+    struct mqtt_client *client;
     int sockfd;
-    pthread_t* client_daemon;
+    pthread_t *client_daemon;
 };
 
 // Prototipos de funciones
-void* publish_thread(void* arg);
-void* measurement_thread(void* arg);
+void *publish_thread(void *arg);
+void *measurement_thread(void *arg);
 
-int main() {
+int main()
+{
     int sockfd;
     open_socket(&sockfd);
 
@@ -44,14 +48,14 @@ int main() {
 
     // Crear hilos
     pthread_t publish_tid, measurement_tid;
-    
+
     // Estructura para los argumentos del hilo publish_thread
     struct publish_thread_args publish_args;
     publish_args.client = &client;
     publish_args.sockfd = sockfd;
     publish_args.client_daemon = &client_daemon;
-    
-    pthread_create(&publish_tid, NULL, publish_thread, (void*)&publish_args);
+
+    pthread_create(&publish_tid, NULL, publish_thread, (void *)&publish_args);
     pthread_create(&measurement_tid, NULL, measurement_thread, NULL);
 
     // Esperar a que los hilos terminen
@@ -62,18 +66,20 @@ int main() {
     pthread_mutex_destroy(&distance_mutex);
     pthread_mutex_destroy(&temperature_mutex);
 
-    //Salgo del mqtt
+    // Salgo del mqtt
     exit_socket(EXIT_SUCCESS, sockfd, &client_daemon);
     return 0;
 }
 
-void* publish_thread(void* arg) {
-    struct publish_thread_args* args = (struct publish_thread_args*)arg;
-    struct mqtt_client* client = args->client;
+void *publish_thread(void *arg)
+{
+    struct publish_thread_args *args = (struct publish_thread_args *)arg;
+    struct mqtt_client *client = args->client;
     int sockfd = args->sockfd;
-    pthread_t* client_daemon = args->client_daemon;
+    pthread_t *client_daemon = args->client_daemon;
 
-    while (1) {
+    while (1)
+    {
         char application_message[256];
         float d, t;
 
@@ -99,8 +105,12 @@ void* publish_thread(void* arg) {
     }
     return NULL;
 }
-    void* measurement_thread(void* arg) {
-    while (1) {
+
+// Signal handler for the timer expiration
+void timer_handler(int sig)
+{
+    if (sig == SIGALRM)
+    {
         pthread_mutex_lock(&acquisition_completed);
         pthread_mutex_lock(&temperature_mutex);
         temperature = obtener_temperatura();
@@ -111,8 +121,45 @@ void* publish_thread(void* arg) {
         pthread_mutex_unlock(&distance_mutex);
 
         pthread_mutex_unlock(&acquisition_completed);
-
-        sleep(1);
     }
+}
+/*
+ void* measurement_thread(void* arg) {
+ while (1) {
+     pthread_mutex_lock(&acquisition_completed);
+     pthread_mutex_lock(&temperature_mutex);
+     temperature = obtener_temperatura();
+     pthread_mutex_unlock(&temperature_mutex);
+
+     pthread_mutex_lock(&distance_mutex);
+     distance = obtener_distancia();
+     pthread_mutex_unlock(&distance_mutex);
+
+     pthread_mutex_unlock(&acquisition_completed);
+
+     sleep(1);
+ }
+ return NULL;
+}*/
+
+void *measurement_thread(void *arg)
+{
+    struct itimerval timer;
+
+    timer.it_value.tv_sec = 0;
+	timer.it_value.tv_usec = 1000000;  // Mesura cada sec
+	timer.it_interval.tv_sec = 0;
+	timer.it_interval.tv_usec = 1000000;
+	setitimer(ITIMER_REAL, &timer, NULL);
+
+    signal(SIGALRM, timer_handler);
+
+    for(;;) {
+        pause();
+    }
+
+    // -lrt
+
+
     return NULL;
 }
