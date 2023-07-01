@@ -2,7 +2,6 @@
 #include <stdlib.h>
 #include <pthread.h>
 #include <unistd.h>
-#include <sys/select.h>
 #include "mqtt_publisher.c"
 #include "distance_sensor.c"
 #include "temperature_sensor.c"
@@ -63,7 +62,7 @@ int main() {
     pthread_mutex_destroy(&distance_mutex);
     pthread_mutex_destroy(&temperature_mutex);
 
-    // Salgo del mqtt
+    //Salgo del mqtt
     exit_socket(EXIT_SUCCESS, sockfd, &client_daemon);
     return 0;
 }
@@ -96,23 +95,11 @@ void* publish_thread(void* arg) {
 
         // Realizar check_error
         check_error(client, sockfd, client_daemon);
-        
-        // Crear temporizador de 2 segundos
-        struct timeval timeout;
-        timeout.tv_sec = 2;
-        timeout.tv_usec = 0;
-
-        // Utilizar select para esperar hasta que se cumpla el temporizador
-        int result = select(0, NULL, NULL, NULL, &timeout);
-        if (result == -1) {
-            perror("Error en select");
-            break;
-        }
+        sleep(2);
     }
     return NULL;
 }
-
-void* measurement_thread(void* arg) {
+    void* measurement_thread(void* arg) {
     while (1) {
         pthread_mutex_lock(&acquisition_completed);
         pthread_mutex_lock(&temperature_mutex);
@@ -125,17 +112,7 @@ void* measurement_thread(void* arg) {
 
         pthread_mutex_unlock(&acquisition_completed);
 
-        // Crear temporizador de 1 segundo
-        struct timeval timeout;
-        timeout.tv_sec = 1;
-        timeout.tv_usec = 0;
-
-        // Utilizar select para esperar hasta que se cumpla el temporizador
-        int result = select(0, NULL, NULL, NULL, &timeout);
-        if (result == -1) {
-            perror("Error en select");
-            break;
-        }
+        sleep(1);
     }
     return NULL;
 }
