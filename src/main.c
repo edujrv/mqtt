@@ -25,6 +25,8 @@ struct publish_thread_args {
 // Prototipos de funciones
 void* publish_thread(void* arg);
 void* measurement_thread(void* arg);
+void measurement();
+
 
 int main() {
     int sockfd;
@@ -119,7 +121,7 @@ void* publish_thread(void* arg) {
     return NULL;
     }
 
-    void* measurement() {
+    void measurement() {
         pthread_mutex_lock(&acquisition_completed);
         pthread_mutex_lock(&temperature_mutex);
         temperature = obtener_temperatura();
