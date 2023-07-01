@@ -118,7 +118,7 @@ void* publish_thread(void* arg) {
 	{
     	    pause();  // Wait for signal
 	}
-    return NULL;
+    // return NULL;
     }
 
     void measurement() {
