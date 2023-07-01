@@ -53,7 +53,7 @@ int main() {
     // if (dis_mux != 0 || temp_mux != 0 || data_mux != 0 ){
     //     printf("ERROR AL INICIALIZAR MUTEX\n");
     // }
-    
+
     // printf("DESPUES DE INICIALIZAR MUTEX\n");
     // Crear hilos
     pthread_t publish_tid, measurement_tid;
@@ -81,7 +81,7 @@ int main() {
     pthread_mutex_destroy(&temperature_mutex);
     // pthread_cond_destroy(&data_ready_cond);
 
-    exit_example(EXIT_SUCCESS, sockfd, &client_daemon);
+    exit_socket(EXIT_SUCCESS, sockfd, &client_daemon);
     return 0;
 }
 
