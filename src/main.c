@@ -105,6 +105,7 @@ void* publish_thread(void* arg) {
 }
     void* measurement_thread(void* arg) {
     struct itimerval timer;
+    printf("measurement_thread");
 
 	// Set up timer to blink LED
 	timer.it_value.tv_sec = 0;
