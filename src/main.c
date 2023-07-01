@@ -12,7 +12,7 @@ float temperature = 0.0;
 pthread_mutex_t distance_mutex;
 pthread_mutex_t temperature_mutex;
 pthread_mutex_t acquisition_completed;
-pthread_cond_t data_ready_cond;
+// pthread_cond_t data_ready_cond;
 // int acquisition_completed = 0;
 
 // Estructura para pasar múltiples argumentos al hilo publish_thread
@@ -43,19 +43,21 @@ int main() {
     setup_temperature_sensor();
 
     // Inicializar los mutex y la variable de condición
-    int dis_mux = pthread_mutex_init(&distance_mutex, NULL);
-    int temp_mux = pthread_mutex_init(&temperature_mutex, NULL);
-    int adq_mux = pthread_mutex_init(&acquisition_completed, NULL);
+    pthread_mutex_init(&distance_mutex, NULL);
+    pthread_mutex_init(&temperature_mutex, NULL);
+    pthread_mutex_init(&acquisition_completed, NULL);
 
-    int data_mux = pthread_cond_init(&data_ready_cond, NULL);
+// TODO: VER SI SE PUEDE BORRRAR ESTE
+    // int data_mux = pthread_cond_init(&data_ready_cond, NULL);
 
-    if (dis_mux != 0 || temp_mux != 0 || data_mux != 0 ){
-        printf("ERROR AL INICIALIZAR MUTEX\n");
-
-    }
-    printf("DESPUES DE INICIALIZAR MUTEX\n");
+    // if (dis_mux != 0 || temp_mux != 0 || data_mux != 0 ){
+    //     printf("ERROR AL INICIALIZAR MUTEX\n");
+    // }
+    
+    // printf("DESPUES DE INICIALIZAR MUTEX\n");
     // Crear hilos
-    pthread_t publish_tid, distance_tid, temperature_tid, measurement_tid;
+    pthread_t publish_tid, measurement_tid;
+    // pthread_t publish_tid, distance_tid, temperature_tid, measurement_tid;
     
     // Estructura para los argumentos del hilo publish_thread
     struct publish_thread_args publish_args;
@@ -70,13 +72,14 @@ int main() {
 
     // Esperar a que los hilos terminen
     pthread_join(publish_tid, NULL);
-    pthread_join(distance_tid, NULL);
-    pthread_join(temperature_tid, NULL);
+    // pthread_join(distance_tid, NULL);
+    // pthread_join(temperature_tid, NULL);
+    pthread_join(measurement_tid, NULL);
 
     // Liberar recursos
     pthread_mutex_destroy(&distance_mutex);
     pthread_mutex_destroy(&temperature_mutex);
-    pthread_cond_destroy(&data_ready_cond);
+    // pthread_cond_destroy(&data_ready_cond);
 
     exit_example(EXIT_SUCCESS, sockfd, &client_daemon);
     return 0;
@@ -119,17 +122,17 @@ void* publish_thread(void* arg) {
     void* measurement_thread(void* arg) {
     while (1) {
         pthread_mutex_lock(&acquisition_completed);
-        float t;
+        // float t;
         pthread_mutex_lock(&temperature_mutex);
         temperature = obtener_temperatura();
         pthread_mutex_unlock(&temperature_mutex);
 
 
         pthread_mutex_lock(&distance_mutex);
-        printf("distance mutex1 \n");
+        // printf("distance mutex1 \n");
         distance = obtener_distancia();
         pthread_mutex_unlock(&distance_mutex);
-        printf("distance mutex1 afuera \n");
+        // printf("distance mutex1 afuera \n");
 
         pthread_mutex_unlock(&acquisition_completed);
 

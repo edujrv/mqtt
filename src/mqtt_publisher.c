@@ -12,7 +12,7 @@
 
 void publish_callback(void** unused, struct mqtt_response_publish *published);
 void* client_refresher(void* client);
-void exit_example(int status, int sockfd, pthread_t *client_daemon);
+void exit_socket(int status, int sockfd, pthread_t *client_daemon);
 
 void open_socket(int* sockfd);
 void connect_socket(int* sockfd, struct mqtt_client* client);
@@ -32,7 +32,7 @@ void open_socket(int* sockfd){
     *sockfd = open_nb_socket(addr, port);
     if ((*sockfd) == -1) {
         perror("Failed to open socket: ");
-        exit_example(EXIT_FAILURE, *sockfd, NULL);
+        exit_socket(EXIT_FAILURE, *sockfd, NULL);
     }
 }
 
@@ -48,7 +48,7 @@ void start_thread(int* sockfd,  struct mqtt_client* client, pthread_t* client_da
     /* start a thread to refresh the client (handle egress and ingree client traffic) */
     if(pthread_create(client_daemon, NULL, client_refresher, client)) {
         fprintf(stderr, "Failed to start client daemon.\n");
-        exit_example(EXIT_FAILURE, *sockfd, NULL);
+        exit_socket(EXIT_FAILURE, *sockfd, NULL);
     }
 }
 
@@ -75,11 +75,11 @@ void check_error( struct mqtt_client* client, int sockfd, pthread_t *client_daem
 {
     if ((*client).error != MQTT_OK) {
         fprintf(stderr, "error: %s\n", mqtt_error_str((*client).error));
-        exit_example(EXIT_FAILURE, sockfd, client_daemon);
+        exit_socket(EXIT_FAILURE, sockfd, client_daemon);
     }
 }
 
-void exit_example(int status, int sockfd, pthread_t *client_daemon)
+void exit_socket(int status, int sockfd, pthread_t *client_daemon)
 {
     if (sockfd != -1) close(sockfd);
     if ((client_daemon) != NULL) pthread_cancel(*client_daemon);
