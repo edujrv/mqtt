@@ -4,7 +4,6 @@
 #include <mqtt.h>
 #include "templates/posix_sockets.h"
 
-// #define addr "172.20.0.2" //IP PARA LA RASP
 #define addr "192.168.192.1" //IP PARA LAS DEMAS MAQUINAS
 #define port "1883"
 #define topic "Mediciones"
@@ -54,19 +53,7 @@ void start_thread(int* sockfd,  struct mqtt_client* client, pthread_t* client_da
 
 // void publish(char data[], struct mqtt_client* client) {
 void publish(struct mqtt_client* client, char application_message[256]) {
-    
-        // time_t timer;
-        // time(&timer);
-        // struct tm* tm_info = localtime(&timer);
-        // char timebuf[26];
-        // strftime(timebuf, 26, "%Y-%m-%d %H:%M:%S", tm_info);
-
-        // /* print a message */
-        // char application_message[256];
-        // snprintf(application_message, sizeof(application_message), "The time is %s", timebuf);
-        // printf("published : \"%s\" \n", application_message);
-
-        /* publish the time */
+        /* publish the measurment */
         mqtt_publish(client, topic, application_message, strlen(application_message) + 1, MQTT_PUBLISH_QOS_0);
 }
 
