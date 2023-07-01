@@ -104,32 +104,37 @@ void* publish_thread(void* arg) {
     }
     return NULL;
 }
-void* measurement_thread(void* arg) {
+    void* measurement_thread(void* arg) {
     struct itimerval timer;
 
-    // Set up timer to call measurement() periodically
-    timer.it_value.tv_sec = 0;
-    timer.it_value.tv_usec = 1000000;  // Call measurement() every 1 second
-    timer.it_interval.tv_sec = 0;
-    timer.it_interval.tv_usec = 1000000;
-    setitimer(ITIMER_REAL, &timer, NULL);
+	// Set up timer to blink LED
+	timer.it_value.tv_sec = 0;
+	timer.it_value.tv_usec = 1000000;  // Blink every 500ms
+	timer.it_interval.tv_sec = 0;
+	timer.it_interval.tv_usec = 1000000;
+	setitimer(ITIMER_REAL, &timer, NULL);
+	signal(SIGALRM, measurement);
 
-    while (1) {
-        pthread_cond_wait(&measurement_cond, &acquisition_completed);
-        measurement();
+	while(1)  // Loop forever
+	{
+    // printf("measurement_thread");
+    	    pause();  // Wait for signal
+	}
+    // return NULL;
     }
-    return NULL;
-}
 
-void measurement() {
-    printf("measurement\n");
-    pthread_mutex_lock(&temperature_mutex);
-    temperature = obtener_temperatura();
-    pthread_mutex_unlock(&temperature_mutex);
+    void measurement() {
+        printf("measurement");
+        pthread_mutex_lock(&acquisition_completed);
+        pthread_mutex_lock(&temperature_mutex);
+        temperature = obtener_temperatura();
+        pthread_mutex_unlock(&temperature_mutex);
 
-    pthread_mutex_lock(&distance_mutex);
-    distance = obtener_distancia();
-    pthread_mutex_unlock(&distance_mutex);
+        pthread_mutex_lock(&distance_mutex);
+        distance = obtener_distancia();
+        pthread_mutex_unlock(&distance_mutex);
 
-    pthread_cond_signal(&measurement_cond);
+        pthread_mutex_unlock(&acquisition_completed);
+
+    // return NULL;
 }
