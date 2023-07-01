@@ -117,7 +117,7 @@ void* publish_thread(void* arg) {
 	for(;;)  // Loop forever
 	{
     printf("measurement_thread");
-    	    pause();  // Wait for signal
+    	    // pause();  // Wait for signal
 	}
     // return NULL;
     }
