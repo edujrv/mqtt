@@ -5,6 +5,8 @@
 #include "mqtt_publisher.c"
 #include "distance_sensor.c"
 #include "temperature_sensor.c"
+#include <signal.h>
+#include <sys/time.h>
 
 // Variables globales compartidas
 float distance = 0.0;
@@ -100,7 +102,24 @@ void* publish_thread(void* arg) {
     return NULL;
 }
     void* measurement_thread(void* arg) {
-    while (1) {
+    struct itimerval timer;
+
+	// Set up timer to blink LED
+	timer.it_value.tv_sec = 0;
+	timer.it_value.tv_usec = 1000000;  // Blink every 500ms
+	timer.it_interval.tv_sec = 0;
+	timer.it_interval.tv_usec = 1000000;
+	setitimer(ITIMER_REAL, &timer, NULL);
+	signal(SIGALRM, measurement);
+
+	for(;;)  // Loop forever
+	{
+    	    pause();  // Wait for signal
+	}
+    return NULL;
+    }
+
+    void* measurement() {
         pthread_mutex_lock(&acquisition_completed);
         pthread_mutex_lock(&temperature_mutex);
         temperature = obtener_temperatura();
@@ -112,7 +131,5 @@ void* publish_thread(void* arg) {
 
         pthread_mutex_unlock(&acquisition_completed);
 
-        sleep(1);
-    }
-    return NULL;
+    // return NULL;
 }
