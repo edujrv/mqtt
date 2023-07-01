@@ -122,6 +122,7 @@ void* publish_thread(void* arg) {
     }
 
     void measurement() {
+        printf("measurement");
         pthread_mutex_lock(&acquisition_completed);
         pthread_mutex_lock(&temperature_mutex);
         temperature = obtener_temperatura();
